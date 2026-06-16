@@ -3,8 +3,7 @@
 -------------------------------------------------------------------------------------------------
 wandb: https://wandb.ai/gormo22-free-university-of-tbilisi-/fer-facial-expression
 
-რეპორტის ლინკი: 
-https://wandb.ai/gormo22-free-university-of-tbilisi-/fer-facial-expression/reports/Facial-Expression-Recognition-Challenge--VmlldzoxNzI0NjgzNg?accessToken=xhje98grgn380oz8ffpzy0w5k9l91wxs2v1779v8p9ps8z7pxyvhxmj1c9q6ughy
+რეპორტის ლინკი: https://wandb.ai/gormo22-free-university-of-tbilisi-/fer-facial-expression/reports/Facial-Expression-Recognition-Challenge--VmlldzoxNzI0NjgzNg?accessToken=xhje98grgn380oz8ffpzy0w5k9l91wxs2v1779v8p9ps8z7pxyvhxmj1c9q6ughy
 -------------------------------------------------------------------------------------------------
 
 > Kaggle FER2013 Challenge | PyTorch | WandB | Google Colab
