@@ -1,6 +1,8 @@
 # Facial Expression Recognition Challenge
 
 -------------------------------------------------------------------------------------------------
+wandb: https://wandb.ai/gormo22-free-university-of-tbilisi-/fer-facial-expression
+
 რეპორტის ლინკი: 
 https://wandb.ai/gormo22-free-university-of-tbilisi-/fer-facial-expression/reports/Facial-Expression-Recognition-Challenge--VmlldzoxNzI0NjgzNg?accessToken=xhje98grgn380oz8ffpzy0w5k9l91wxs2v1779v8p9ps8z7pxyvhxmj1c9q6ughy
 -------------------------------------------------------------------------------------------------
@@ -24,7 +26,9 @@ https://wandb.ai/gormo22-free-university-of-tbilisi-/fer-facial-expression/repor
 - **კლასები:** 7 ემოცია
 - **სატრენინგო ნიმუშები:** ~28,709
 - **ვალიდაცია:** 10% stratified split (`random_state=42`)
-- **კლასების დისბალანსი:** Happy კლასი მნიშვნელოვნად ჭარბობს; Disgust — ყველაზე ნაკლები რაოდენობით გვხვდება. 
+- **კლასების დისბალანსი:** Happy კლასი მნიშვნელოვნად ჭარბობს; Disgust — ყველაზე ნაკლები რაოდენობით გვხვდება.
+
+![data](plot_class_distribution.png)
 
 ### Dataset კლასი
 
@@ -199,6 +203,8 @@ CNN output: (B, C, H, W)
 | BetterDeepCNN | ~65% | 60 | GELU + GAP + 4 blocks |
 | CNN+BiLSTM | ~60% | 30 | sequential processing |
 
+![summary](summary.png)
+
 ---
 
 ## WandB პროექტი
@@ -217,9 +223,15 @@ CNN output: (B, C, H, W)
 ## ანალიზი:
 
 TinyCNN — მოდელი ძალიან მარტივია ამოცანისთვის. gap მიუთითებს, რომ ქსელს feature-ების სრულად დასამახსოვრებლად სირთულე არ ყოფნის, მაგრამ გენერალიზაცია მაინც სუსტია — underfit და overfit ერთდროულად.
+
 MediumCNN (no aug) — ყველაზე პრობლემური შემთხვევა. 18%-იანი gap ძლიერი ოვერფიტია: მოდელმა სატრენინგო სეტი "დაიზეპირა", augmentation-ის გარეშე კი ახალ მონაცემებზე ვერ გენერალიზდება. BatchNorm და Dropout-ი საკმარისი არ აღმოჩნდა data augmentation-ის გარეშე.
+
 DeepCNN — augmentation-ისა და L2 რეგულარიზაციის დამატებამ gap 18%-დან ~8%-მდე დაიყვანა. მნიშვნელოვანი გაუმჯობესება, მაგრამ ოვერფიტი კვლავ შესამჩნევია — Dropout2d + weight_decay კომბინაცია ჯერ არ არის საკმარისი.
+
 BetterDeepCNN — ყველაზე წარმატებული. 1%-იანი gap ნიშნავს, რომ GELU activation, Global Average Pooling და პროგრესული Dropout (0.25→0.4) ეფექტურად აგვარებს რეგულარიზაციის პრობლემას. 60 ეპოქის მიუხედავად მოდელი არ დაოვერფიტდა — GAP-ი განსაკუთრებით გადამწყვეტი იყო, რადგან flat-ening-ის ნაცვლად channel-wise averaging ბევრ ზედმეტ პარამეტრს შლის.
+
 CNN+BiLSTM — 1%-იანი gap BetterDeepCNN-ის მსგავსია, მაგრამ აბსოლუტური val acc (60%) ოდნავ დაბალია. LSTM-ი row-by-row ინფორმაციას სწავლობს, რაც განსხვავებულ inductive bias-ს ქმნის — ოვერფიტი კარგადაა კონტროლირებული, მაგრამ pure CNN-ის spatial feature extraction-ს ვერ სჯობს ამ ამოცანაზე.
+
+![gap](plot_train_val_gap.png)
 
 ზოგადი დასკვნა: ყველაზე მეტი გაუმჯობესება მოვიდა არა მოდელის სიღრმის გაზრდით, არამედ data augmentation-ის დამატებით (MediumCNN→DeepCNN: gap 18%→8%) და GAP + პროგრესული Dropout-ით (DeepCNN→BetterDeepCNN: gap 8%→1%). ეს გვიჩვენებს, რომ FER2013-ზე რეგულარიზაციის სტრატეგია მნიშვნელოვანია.
